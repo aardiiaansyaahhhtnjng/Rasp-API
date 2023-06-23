@@ -1,0 +1,1365 @@
+[
+    {
+        "id": "d36261362ca3c418",
+        "type": "tab",
+        "label": "UAS IoT",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f8f8ee3d472b4ed8",
+        "type": "http in",
+        "z": "d36261362ca3c418",
+        "name": "API Openweather",
+        "url": "/testing/",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 120,
+        "wires": [
+            [
+                "fdbe9bf185d7618d",
+                "9ecad95e034e9291"
+            ]
+        ]
+    },
+    {
+        "id": "fdbe9bf185d7618d",
+        "type": "change",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 400,
+        "y": 60,
+        "wires": [
+            [
+                "778ab505ee69e67b"
+            ]
+        ]
+    },
+    {
+        "id": "778ab505ee69e67b",
+        "type": "http response",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 590,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "cf517abc5511d16e",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "Link to Openweather's API",
+        "func": "msg.url = \"https://api.openweathermap.org/data/2.5/weather?q=\" + msg.payload.cityname + \"&appid=4bcfdc9bac42b0118be66eb182cc8b52&units=metric\"\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 200,
+        "wires": [
+            [
+                "8de116353a0893e8"
+            ]
+        ]
+    },
+    {
+        "id": "8de116353a0893e8",
+        "type": "http request",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 690,
+        "y": 200,
+        "wires": [
+            [
+                "6570b59c7ca98e1e",
+                "a9099a232b69ecdf"
+            ]
+        ]
+    },
+    {
+        "id": "6570b59c7ca98e1e",
+        "type": "debug",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "a9099a232b69ecdf",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "Filtering",
+        "func": "msg.payload = {\n    cityname: msg.payload.name,\n    temp: msg.payload.main.temp,\n    humidity: msg.payload.main.humidity,\n    pressure: msg.payload.main.pressure,\n    windspeed: msg.payload.wind.speed,\n    winddirection: msg.payload.wind.deg,\n    cloudcondition: msg.payload.clouds.all,\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 160,
+        "y": 340,
+        "wires": [
+            [
+                "0e8f65634904a351",
+                "47e267eaef98b40d"
+            ]
+        ]
+    },
+    {
+        "id": "0e8f65634904a351",
+        "type": "debug",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "9ecad95e034e9291",
+        "type": "trigger",
+        "z": "d36261362ca3c418",
+        "name": "Looping every 10 min",
+        "op1": "",
+        "op2": "0",
+        "op1type": "pay",
+        "op2type": "str",
+        "duration": "-10",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "min",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 200,
+        "y": 200,
+        "wires": [
+            [
+                "cf517abc5511d16e"
+            ]
+        ]
+    },
+    {
+        "id": "47e267eaef98b40d",
+        "type": "mqtt out",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "topic": "test/MQTT",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "d6687f42.5d91e",
+        "x": 410,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "3b30ed7ef195e4e6",
+        "type": "mqtt in",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "topic": "test/MQTT",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "d6687f42.5d91e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 65,
+        "y": 488.75002002716064,
+        "wires": [
+            [
+                "c15eea9a359a25c8",
+                "0a344750382ba6a9",
+                "1925e98ef27dfdfd"
+            ]
+        ]
+    },
+    {
+        "id": "c15eea9a359a25c8",
+        "type": "json",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 275,
+        "y": 488.75002002716064,
+        "wires": [
+            [
+                "d155eebab50434cf"
+            ]
+        ]
+    },
+    {
+        "id": "d155eebab50434cf",
+        "type": "csv",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "sep": ",",
+        "hdrin": "",
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 455,
+        "y": 488.75002002716064,
+        "wires": [
+            [
+                "fc5c1883f9219cf6",
+                "b0c032f787f609a7"
+            ]
+        ]
+    },
+    {
+        "id": "fc5c1883f9219cf6",
+        "type": "file",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "filename": "C:\\realtime\\Openweather.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 745,
+        "y": 488.75002002716064,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b0c032f787f609a7",
+        "type": "debug",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 695,
+        "y": 428.75002002716064,
+        "wires": []
+    },
+    {
+        "id": "311e4a5500a33a3e",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "to t_city",
+        "func": "msg.topic = \"INSERT INTO t_city(cityname) VALUES ('\" + msg.cityname + \"');\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 865,
+        "y": 608.7500200271606,
+        "wires": [
+            [
+                "978d1a61b922716c",
+                "b036571e97d87ee6"
+            ]
+        ]
+    },
+    {
+        "id": "978d1a61b922716c",
+        "type": "mysql",
+        "z": "d36261362ca3c418",
+        "mydb": "2ea7e9672ffd4b3f",
+        "name": "",
+        "x": 1175,
+        "y": 608.7500200271606,
+        "wires": [
+            [
+                "cf51e557fe219b86"
+            ]
+        ]
+    },
+    {
+        "id": "b036571e97d87ee6",
+        "type": "debug",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "cityname",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1165,
+        "y": 668.7500200271606,
+        "wires": []
+    },
+    {
+        "id": "7e8d262aeb7f9b52",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "to t_weather_historical",
+        "func": "msg.topic = \"INSERT INTO t_weather_historical (id_city, time, temp, humidity, pressure, windspeed, winddirection, cloudcondition)\";\nmsg.topic += \"VALUES\";\nmsg.topic += \"((SELECT id_city FROM t_city WHERE cityname = '\" + msg.cityname + \"'),\";\nmsg.topic += \"NOW(),\";\nmsg.topic += msg.weather.temp + \",\";\nmsg.topic += msg.weather.humidity + \",\";\nmsg.topic += msg.weather.pressure + \",\";\nmsg.topic += msg.weather.windspeed + \",\";\nmsg.topic += msg.weather.winddirection + \",\";\nmsg.topic += msg.weather.cloudcondition + \")\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 925,
+        "y": 888.7500200271606,
+        "wires": [
+            [
+                "6df5e6debb554e5a"
+            ]
+        ]
+    },
+    {
+        "id": "6df5e6debb554e5a",
+        "type": "mysql",
+        "z": "d36261362ca3c418",
+        "mydb": "2ea7e9672ffd4b3f",
+        "name": "",
+        "x": 1175,
+        "y": 888.7500200271606,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0a344750382ba6a9",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "function 4",
+        "func": "msg.topic = \"SELECT COUNT(*) AS 'Exists' FROM t_city WHERE cityname = '\" + msg.payload.cityname + \"';\"\nmsg.cityname = msg.payload.cityname;\nmsg.weather = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 285,
+        "y": 628.7500200271606,
+        "wires": [
+            [
+                "48bbe64f81a1c9f2"
+            ]
+        ]
+    },
+    {
+        "id": "48bbe64f81a1c9f2",
+        "type": "mysql",
+        "z": "d36261362ca3c418",
+        "mydb": "2ea7e9672ffd4b3f",
+        "name": "",
+        "x": 475,
+        "y": 628.7500200271606,
+        "wires": [
+            [
+                "3fd41f6b608e0455",
+                "b743d1e363c75ba9"
+            ]
+        ]
+    },
+    {
+        "id": "3fd41f6b608e0455",
+        "type": "switch",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "property": "payload[0].Exists",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            },
+            {
+                "t": "neq",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 675,
+        "y": 628.7500200271606,
+        "wires": [
+            [
+                "311e4a5500a33a3e"
+            ],
+            [
+                "cf51e557fe219b86"
+            ]
+        ]
+    },
+    {
+        "id": "b743d1e363c75ba9",
+        "type": "debug",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "cityname",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 745,
+        "y": 568.7500200271606,
+        "wires": []
+    },
+    {
+        "id": "cf51e557fe219b86",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "function 5",
+        "func": "msg.topic = \"SELECT COUNT(*) AS 'Exists' FROM t_weather_realtime WHERE id_city=(SELECT id_city FROM t_city WHERE cityname='\"+msg.cityname+\"');\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 285,
+        "y": 748.7500200271606,
+        "wires": [
+            [
+                "f52e24d175ada1e2"
+            ]
+        ]
+    },
+    {
+        "id": "f52e24d175ada1e2",
+        "type": "mysql",
+        "z": "d36261362ca3c418",
+        "mydb": "2ea7e9672ffd4b3f",
+        "name": "",
+        "x": 475,
+        "y": 748.7500200271606,
+        "wires": [
+            [
+                "f4a1db47b999cd1e",
+                "7e8d262aeb7f9b52"
+            ]
+        ]
+    },
+    {
+        "id": "f4a1db47b999cd1e",
+        "type": "switch",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "property": "payload[0].Exists",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            },
+            {
+                "t": "neq",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 695,
+        "y": 748.7500200271606,
+        "wires": [
+            [
+                "94872c9f3760c362"
+            ],
+            [
+                "d6929f730cb608ae"
+            ]
+        ]
+    },
+    {
+        "id": "94872c9f3760c362",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "to t_weather_realtime",
+        "func": "msg.topic = \"INSERT INTO t_weather_realtime (id_city, timestamp, temp, humidity, pressure, windspeed, winddirection, cloudcondition)\";\nmsg.topic += \"VALUES\";\nmsg.topic += \"((SELECT id_city FROM t_city WHERE cityname = '\" + msg.cityname + \"'),\";\nmsg.topic += \"NOW(),\";\nmsg.topic += msg.weather.temp + \",\";\nmsg.topic += msg.weather.humidity + \",\";\nmsg.topic += msg.weather.pressure + \",\";\nmsg.topic += msg.weather.windspeed + \",\";\nmsg.topic += msg.weather.winddirection + \",\";\nmsg.topic += msg.weather.cloudcondition + \")\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 925,
+        "y": 728.7500200271606,
+        "wires": [
+            [
+                "eebb78fa674f01ed"
+            ]
+        ]
+    },
+    {
+        "id": "eebb78fa674f01ed",
+        "type": "mysql",
+        "z": "d36261362ca3c418",
+        "mydb": "2ea7e9672ffd4b3f",
+        "name": "",
+        "x": 1175,
+        "y": 728.7500200271606,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d6929f730cb608ae",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "to t_weather_realtime",
+        "func": "msg.topic = \"UPDATE t_weather_realtime SET \";\nmsg.topic += \"timestamp=NOW(),\";\nmsg.topic += \"temp=\" + msg.weather.temp + \",\";\nmsg.topic += \"humidity=\" + msg.weather.humidity + \",\";\nmsg.topic += \"pressure=\" + msg.weather.pressure + \",\";\nmsg.topic += \"windspeed=\" + msg.weather.windspeed + \",\";\nmsg.topic += \"winddirection=\" + msg.weather.winddirection + \",\";\nmsg.topic += \"cloudcondition=\" + msg.weather.cloudcondition + \" \";\nmsg.topic += \"WHERE id_city=(SELECT id_city FROM t_city WHERE cityname = '\" + msg.cityname + \"')\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 925,
+        "y": 808.7500200271606,
+        "wires": [
+            [
+                "18ef965b6e8dc620"
+            ]
+        ]
+    },
+    {
+        "id": "18ef965b6e8dc620",
+        "type": "mysql",
+        "z": "d36261362ca3c418",
+        "mydb": "2ea7e9672ffd4b3f",
+        "name": "",
+        "x": 1175,
+        "y": 808.7500200271606,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f669e51691cbfd7",
+        "type": "http in",
+        "z": "d36261362ca3c418",
+        "name": "API login",
+        "url": "/login/",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 60,
+        "y": 960,
+        "wires": [
+            [
+                "3b9a7d71ae570d94"
+            ]
+        ]
+    },
+    {
+        "id": "3b9a7d71ae570d94",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "function 6",
+        "func": "msg.topic = \"SELECT * FROM t_user WHERE username=? AND password=? AND active='Y'\" ;\nmsg.payload = [msg.payload.uname, msg.payload.pass];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 960,
+        "wires": [
+            [
+                "dd44b61a299bc34b"
+            ]
+        ]
+    },
+    {
+        "id": "dd44b61a299bc34b",
+        "type": "mysql",
+        "z": "d36261362ca3c418",
+        "mydb": "2ea7e9672ffd4b3f",
+        "name": "",
+        "x": 510,
+        "y": 960,
+        "wires": [
+            [
+                "9d71b4f158c28a93",
+                "f5ea9ef8d7f246e5"
+            ]
+        ]
+    },
+    {
+        "id": "9d71b4f158c28a93",
+        "type": "switch",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "empty"
+            },
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 270,
+        "y": 1100,
+        "wires": [
+            [
+                "3ef6d8740dbe8609"
+            ],
+            [
+                "e11322997fa479a4"
+            ]
+        ]
+    },
+    {
+        "id": "3ef6d8740dbe8609",
+        "type": "template",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "username and/or password doesn't match",
+        "output": "str",
+        "x": 480,
+        "y": 1060,
+        "wires": [
+            [
+                "c1556ea48f42db7f"
+            ]
+        ]
+    },
+    {
+        "id": "c1556ea48f42db7f",
+        "type": "http response",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 690,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "e11322997fa479a4",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "function 7",
+        "func": "function randomStr (len, arr) {\n    var ans = '';\n    for (var i = len; i > 0; i--) {\n        ans += arr[Math.floor(Math.random() * arr.length)];\n    }\n    return ans;\n}\n\nmsg.payload[0].access_token = randomStr (20, '1234567890abcdef');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 1160,
+        "wires": [
+            [
+                "ba77703b9e1994dd",
+                "89e9336fcf3665ce"
+            ]
+        ]
+    },
+    {
+        "id": "ba77703b9e1994dd",
+        "type": "template",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{{#payload}} \n{\"access_token\":\"{{access_token}}\"}\n{{/payload}}",
+        "output": "str",
+        "x": 680,
+        "y": 1160,
+        "wires": [
+            [
+                "63faea3ccb1ccc51"
+            ]
+        ]
+    },
+    {
+        "id": "63faea3ccb1ccc51",
+        "type": "http response",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 870,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "f5ea9ef8d7f246e5",
+        "type": "debug",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "89e9336fcf3665ce",
+        "type": "function",
+        "z": "d36261362ca3c418",
+        "name": "function 8",
+        "func": "msg.topic = \"UPDATE t_user_access_token SET valid='N' WHERE id_user=? AND platform=?; INSERT INTO t_user_access_token(time_expired, id_user, access_token, platform) VALUES(DATE_ADD(NOW(), INTERVAL 1 DAY),?,?,?)\";\nmsg.payload = [msg.payload[0].id_user, \"platform\", msg.payload[0].id_user, msg.payload[0].access_token, \"platform\"];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 1260,
+        "wires": [
+            [
+                "3d64afb3c2f4c8b3"
+            ]
+        ]
+    },
+    {
+        "id": "3d64afb3c2f4c8b3",
+        "type": "mysql",
+        "z": "d36261362ca3c418",
+        "mydb": "2ea7e9672ffd4b3f",
+        "name": "",
+        "x": 710,
+        "y": 1260,
+        "wires": [
+            [
+                "649dfff42f27d49a"
+            ]
+        ]
+    },
+    {
+        "id": "649dfff42f27d49a",
+        "type": "debug",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "168b53243286bf95",
+        "type": "http in",
+        "z": "d36261362ca3c418",
+        "name": "PAGE",
+        "url": "/login/",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 50,
+        "y": 1840,
+        "wires": [
+            [
+                "d3a08c7c0a2e816b"
+            ]
+        ]
+    },
+    {
+        "id": "d3a08c7c0a2e816b",
+        "type": "template",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Simple login form</title>\n    <link href=\"https://fonts.googleapis.com/css?family=Roboto:300,400,500,700\" rel=\"stylesheet\">\n    <style>\n      html, body {\n      display: flex;\n      justify-content: center;\n      font-family: Roboto, Arial, sans-serif;\n      font-size: 15px;\n      }\n      form {\n      border: 5px solid #f1f1f1;\n      }\n      input[type=text], input[type=password] {\n      width: 100%;\n      padding: 16px 8px;\n      margin: 8px 0;\n      display: inline-block;\n      border: 1px solid #ccc;\n      box-sizing: border-box;\n      }\n      button {\n      background-color: #8ebf42;\n      color: white;\n      padding: 14px 0;\n      margin: 10px 0;\n      border: none;\n      cursor: grabbing;\n      width: 100%;\n      }\n      h1 {\n      text-align:center;\n      fone-size:18;\n      }\n      button:hover {\n      opacity: 0.8;\n      }\n      .formcontainer {\n      text-align: left;\n      margin: 24px 50px 12px;\n      }\n      .container {\n      padding: 16px 0;\n      text-align:left;\n      }\n      span.psw {\n      float: right;\n      padding-top: 0;\n      padding-right: 15px;\n      }\n      /* Change styles for span on extra small screens */\n      @media screen and (max-width: 300px) {\n      span.psw {\n      display: block;\n      float: none;\n      }\n    </style>\n  </head>\n  <body>\n    <form action=\"/login\" method=\"POST\">\n      <h1>Login Form</h1>\n      <div class=\"formcontainer\">\n      <hr/>\n      <div class=\"container\">\n        <label for=\"uname\"><strong>Username</strong></label>\n        <input type=\"text\" placeholder=\"Enter Username\" name=\"uname\" required>\n        <label for=\"pass\"><strong>Password</strong></label>\n        <input type=\"password\" placeholder=\"Enter Password\" name=\"pass\" required>\n      </div>\n      <button type=\"submit\">Login</button>\n      <div class=\"container\" style=\"background-color: #eee\">\n        <label style=\"padding-left: 15px\">\n        <input type=\"checkbox\"  checked=\"checked\" name=\"remember\"> Remember me\n        </label>\n        <span class=\"psw\"><a href=\"#\"> Forgot password?</a></span>\n      </div>\n    </form>\n  </body>\n</html>",
+        "output": "str",
+        "x": 240,
+        "y": 1840,
+        "wires": [
+            [
+                "94f7e43a3fa406ee",
+                "bd3fe56f16a8573e"
+            ]
+        ]
+    },
+    {
+        "id": "94f7e43a3fa406ee",
+        "type": "http response",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 450,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "bd3fe56f16a8573e",
+        "type": "switch",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 450,
+        "y": 1940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e67a99d7140984f9",
+        "type": "ui_text",
+        "z": "d36261362ca3c418",
+        "group": "dd4b956c524c5716",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "text",
+        "format": "{{value}}&deg;C",
+        "layout": "row-spread",
+        "className": "",
+        "x": 530,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "191018c4c3b8134f",
+        "type": "mqtt in",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "topic": "test/MQTT",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "d6687f42.5d91e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 60,
+        "y": 1380,
+        "wires": [
+            [
+                "38f9cc99b0619be9",
+                "05dc230272c7c8df",
+                "17554bc73aed7063",
+                "5f11ce7fbf15d373"
+            ]
+        ]
+    },
+    {
+        "id": "38f9cc99b0619be9",
+        "type": "change",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.temp",
+                "pt": "msg",
+                "to": "value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 1380,
+        "wires": [
+            [
+                "e67a99d7140984f9",
+                "2190aeb4cd684acd"
+            ]
+        ]
+    },
+    {
+        "id": "2190aeb4cd684acd",
+        "type": "ui_gauge",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "group": "dd4b956c524c5716",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "suhu",
+        "label": "C",
+        "format": "{{msg.value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "20",
+        "seg2": "45",
+        "className": "",
+        "x": 530,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "05dc230272c7c8df",
+        "type": "change",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.humidity",
+                "pt": "msg",
+                "to": "value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 290,
+        "y": 1500,
+        "wires": [
+            [
+                "aaa684c07f11b502",
+                "6b46611e0aeea25d"
+            ]
+        ]
+    },
+    {
+        "id": "17554bc73aed7063",
+        "type": "change",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.pressure",
+                "pt": "msg",
+                "to": "value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 290,
+        "y": 1620,
+        "wires": [
+            [
+                "b4cab74abca3171d",
+                "8741691aa140f765"
+            ]
+        ]
+    },
+    {
+        "id": "5f11ce7fbf15d373",
+        "type": "change",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.windspeed",
+                "pt": "msg",
+                "to": "value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 1740,
+        "wires": [
+            [
+                "7a3533618b1075f7",
+                "730796607603035e"
+            ]
+        ]
+    },
+    {
+        "id": "b4cab74abca3171d",
+        "type": "ui_chart",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "group": "d619776f96ff6193",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "chart",
+        "chartType": "bar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 530,
+        "y": 1560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7a3533618b1075f7",
+        "type": "ui_chart",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "group": "96b039f9633c67a0",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "chart",
+        "chartType": "bar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 530,
+        "y": 1680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aaa684c07f11b502",
+        "type": "ui_chart",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "group": "f19cb74dc39a14a4",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "chart",
+        "chartType": "bar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 530,
+        "y": 1440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6b46611e0aeea25d",
+        "type": "ui_text",
+        "z": "d36261362ca3c418",
+        "group": "f19cb74dc39a14a4",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "text",
+        "format": "{{value.humidity}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 530,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "8741691aa140f765",
+        "type": "ui_text",
+        "z": "d36261362ca3c418",
+        "group": "d619776f96ff6193",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "text",
+        "format": "{{value.pressure}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 530,
+        "y": 1620,
+        "wires": []
+    },
+    {
+        "id": "730796607603035e",
+        "type": "ui_text",
+        "z": "d36261362ca3c418",
+        "group": "96b039f9633c67a0",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "text",
+        "format": "{{value.windspeed}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 530,
+        "y": 1740,
+        "wires": []
+    },
+    {
+        "id": "1925e98ef27dfdfd",
+        "type": "debug",
+        "z": "d36261362ca3c418",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 210,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "d6687f42.5d91e",
+        "type": "mqtt-broker",
+        "name": "HiveMQ",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "2ea7e9672ffd4b3f",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "internet of things",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "dd4b956c524c5716",
+        "type": "ui_group",
+        "name": "Tempherature",
+        "tab": "a29482e1e615d563",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d619776f96ff6193",
+        "type": "ui_group",
+        "name": "pressure",
+        "tab": "a29482e1e615d563",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "96b039f9633c67a0",
+        "type": "ui_group",
+        "name": "windspeed",
+        "tab": "a29482e1e615d563",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f19cb74dc39a14a4",
+        "type": "ui_group",
+        "name": "humidity",
+        "tab": "a29482e1e615d563",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a29482e1e615d563",
+        "type": "ui_tab",
+        "name": "UAS IoT",
+        "icon": "dashboard",
+        "order": 4,
+        "disabled": false,
+        "hidden": false
+    }
+]
