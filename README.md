@@ -1,2 +1,2 @@
 # Rasp-API
-Membuat sebuah RestAPI Server untuk mengumpulkan data cuaca berdasarkan permintaan client. data cuaca diporeleh dari situs openweathermap yang terhubung dengan program menggunakan API. Cuaca hasil permintaan kemudian di Log ke dalam sebuah DATABASE dengan menggunakan MQTT publisher dan subscriber.
+Create a RestAPI Server to collect weather data based on client requests. Weather data is obtained from the openweathermap site which is linked to the program using an API. Weather request results are then logged into a DATABASE using the MQTT publisher and subscriber.
